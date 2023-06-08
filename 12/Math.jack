@@ -1,0 +1,181 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+
+    static Array powers_of_two;
+    static int num_bits;
+
+    /** Initializes the library. */
+    function void init() {
+        let powers_of_two = Math._initializePowersOfTwo();
+        let num_bits = 16;
+        return;
+    }
+
+    function Array _initializePowersOfTwo() {
+        var Array pows;
+        let pows = Array.new(16);
+        let pows[0] = 1;
+        let pows[1] = 2;
+        let pows[2] = 4;
+        let pows[3] = 8;
+        let pows[4] = 16;
+        let pows[5] = 32;
+        let pows[6] = 64;
+        let pows[7] = 128;
+        let pows[8] = 256;
+        let pows[9] = 512;
+        let pows[10] = 1024;
+        let pows[11] = 2048;
+        let pows[12] = 4096;
+        let pows[13] = 8192;
+        let pows[14] = 16384;
+        let pows[15] = -1-32767;
+        return pows;
+    }
+
+    function boolean bit(int x, int i) {
+        var boolean is_one;
+        var int temp;
+        let temp = (powers_of_two[i] &  x);
+        if (temp = 0) {
+            let is_one = false;
+        }
+        else {
+            let is_one = true;
+        }
+        return is_one;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        var int out;
+        if (x < 0) {
+            let out = -x;
+        }
+        else {
+            let out = x;
+        }
+        return out;
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+     */
+    function int multiply(int x, int y) {
+        var int shifted_x;
+        var int bit_index;
+        var int out;
+        if ((y = 0) | (x = 0)) {
+            return 0;
+        }
+        let shifted_x = x;
+        let bit_index = 0;
+        let out = 0;
+        while (bit_index < num_bits) {
+            if (Math.bit(y, bit_index)) {
+                let out = out + shifted_x;
+            }
+            let shifted_x = shifted_x + shifted_x;
+            let bit_index = bit_index + 1;
+        }
+        return out;
+    }
+
+    /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     *  NOTE: no zero division test.
+     */
+    function int divide(int x, int y) {
+        var int x_abs;
+        var int y_abs;
+        var int out;
+        let x_abs = Math.abs(x);
+        let y_abs = Math.abs(y);
+        let out = Math._divide_positive(x_abs, y_abs);
+        if (((x < 0) & (y > 0)) | ((x > 0) & (y < 0))) {
+            let out = -out;
+        }
+        return out;
+    }
+
+    function int _divide_positive(int x, int y) {
+        var int q;
+        var int double_q;
+        var int out;
+        if ((y > x) | (y < 0)) {
+            return 0;
+        }
+        let q = Math._divide_positive(x, (y + y));
+        let double_q = q + q;
+        if ((x - (double_q * y)) < y) {
+            let out = double_q;
+        }
+        else {
+            let out = double_q + 1;
+        }
+        return out;
+    } 
+
+    /** Returns the integer part of the square root of x. NOTE: no sign check. */
+    function int sqrt(int x) {
+        var int y;
+        var int candidate;
+        var int index;
+        if (x = 0) {return 0;}
+        let y = 0;
+        let index = num_bits - 1;
+        if (~(x < powers_of_two[index])) { // equality case would only really matter for a (2n+1)-bits machine but let's keep it for correctness
+            let index = (index / 2);
+        }
+        else {
+            while (x < powers_of_two[index]) {
+                let index = index - 1;
+            }
+            let index = (index + 1) / 2;
+        }
+        while (~(index < 0)) {
+            let candidate = y + powers_of_two[index];
+            if ((~((candidate * candidate) > x)) & ((candidate * candidate) > 0)) {
+                let y = candidate;
+            }
+            let index = index - 1;
+        }
+        return y;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        var int out;
+        if (a < b) {
+            let out = b;
+        }
+        else {
+            let out = a;
+        }
+        return out;
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        var int out;
+        if (a < b) {
+            let out = a;
+        }
+        else {
+            let out = b;
+        }
+        return out;
+    }
+}

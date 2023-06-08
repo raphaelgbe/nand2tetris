@@ -1,0 +1,56 @@
+class Pad {
+    field int unit_size;
+    field int pad_length;
+    field int x;
+    field int y;
+
+    constructor Pad new(int game_unit_size, int game_pad_length) {
+        let unit_size = game_unit_size;
+        let pad_length = game_pad_length;
+        let x = 0;
+        let y = 0;
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getX() {
+        return x;
+    }
+
+    method int getY() {
+        return y;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + unit_size, y + pad_length);
+        return;
+    }
+
+    method void moveUp() {
+        if (~(y = 0)) {
+            do Screen.setColor(false);
+            do Screen.drawLine(x, y + pad_length, x + unit_size, y + pad_length);
+            do Screen.setColor(true);
+            do Screen.drawLine(x, y - 1, x + unit_size, y - 1);
+            let y = y - 1;
+        }
+        return;
+    }
+
+    method void moveDown() {
+        if (~((y + pad_length) = 255)) {
+            do Screen.setColor(false);
+            do Screen.drawLine(x, y, x + unit_size, y);
+            do Screen.setColor(true);
+            do Screen.drawLine(x, y + pad_length + 1, x + unit_size, y + pad_length + 1);
+            let y = y + 1;
+        }
+        return;
+    }
+}

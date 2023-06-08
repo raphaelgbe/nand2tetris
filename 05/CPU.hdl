@@ -1,0 +1,68 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Hack CPU (Central Processing unit), consisting of an ALU,
+ * two registers named A and D, and a program counter named PC.
+ * The CPU is designed to fetch and execute instructions written in 
+ * the Hack machine language. In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM==0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time step. If reset==1 then the 
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // Put your code here:
+    // NOTE: instruction first 3 bits are 1's
+    And(a=instruction[12], b=instruction[15], out=selM); // if instruction[15] (i.e. C instruction): instruction[12] == 0 => use A ; == 1 => use M
+    Mux16(a=aReg, b=inM, sel=selM, out=inALU); // instruction[12] == 0 => use A ; == 1 => use M
+    // QUESTION!!!! WHAT IF A INSTRUCTION?? WHAT SHOULD THE ALU DO????
+    ALU(x=dReg, y=inALU, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outALU, out=outM, zr=zrALU, ng=ngALU); // TO BE CHECKED!! ORDER OF INPUTS! (did I get x & y reversed??)
+    And(a=instruction[4], b=instruction[15], out=loadInDRegIfCInstruction);  // instruction[4] corresponds to putting outM in D Register by design of C instructions
+    DRegister(in=outALU, load=loadInDRegIfCInstruction, out=dReg);
+    Not(in=instruction[15], out=isAInstruction);
+    Mux16(a=outALU, b=instruction, sel=isAInstruction, out=inAReg);
+    And(a=instruction[15], b=instruction[5], out=loadAddressIfCInstrucion);
+    Or(a=loadAddressIfCInstrucion, b=isAInstruction, out=loadAddress); // NOTE: Or <=> XOR here because both can't be simultaneously true
+    ARegister(in=inAReg, load=loadAddress, out=aReg, out[0..14]=addressM);
+    And(a=instruction[15], b=instruction[3], out=writeM);
+
+
+    And(a=instruction[15], b=instruction[1], out=equalsZero);
+    And(a=equalsZero, b=zrALU, out=loadJumpEquals);
+    And(a=instruction[15], b=instruction[0], out=positive);
+    Or(a=ngALU, b=zrALU, out=neqALU);
+    Not(in=neqALU, out=posALU);
+    And(a=positive, b=posALU, out=loadJumpPos);
+    And(a=instruction[15], b=instruction[2], out=negative);
+    And(a=negative, b=ngALU, out=loadJumpNeg);
+    Or8Way(in[0]=loadJumpEquals, in[1]=loadJumpPos, in[2]=loadJumpNeg, in[3..7]=false, out=loadJump);
+    PC(in=aReg,load=loadJump,inc=true,reset=reset,out[0..14]=pc); // NOTE on inc: if C instruction, fetch next, else (A instruction) do nothing
+}

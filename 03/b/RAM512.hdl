@@ -1,0 +1,32 @@
+// This file is part of the materials accompanying the book 
+// "The Elements of Computing Systems" by Nisan and Schocken, 
+// MIT Press. Book site: www.idc.ac.il/tecs
+// File name: projects/03/b/RAM512.hdl
+
+/**
+ * Memory of 512 registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+
+CHIP RAM512 {
+    IN in[16], load, address[9];
+    OUT out[16];
+
+    PARTS:
+    // Put your code here:
+    DMux8Way(in=load, sel=address[0..2], a=dummyLoad0, b=dummyLoad1, c=dummyLoad2, d=dummyLoad3, e=dummyLoad4, f=dummyLoad5, g=dummyLoad6, h=dummyLoad7);
+    RAM64(in=in, address=address[3..8], load=dummyLoad0, out=dummyOut0);
+    RAM64(in=in, address=address[3..8], load=dummyLoad1, out=dummyOut1);
+    RAM64(in=in, address=address[3..8], load=dummyLoad2, out=dummyOut2);
+    RAM64(in=in, address=address[3..8], load=dummyLoad3, out=dummyOut3);
+    RAM64(in=in, address=address[3..8], load=dummyLoad4, out=dummyOut4);
+    RAM64(in=in, address=address[3..8], load=dummyLoad5, out=dummyOut5);
+    RAM64(in=in, address=address[3..8], load=dummyLoad6, out=dummyOut6);
+    RAM64(in=in, address=address[3..8], load=dummyLoad7, out=dummyOut7);
+    //RAM64(in=in, address=address[3..8], load=dummyLoad{i}, out=dummyOut{i});
+    Mux8Way16(a=dummyOut0, b=dummyOut1, c=dummyOut2, d=dummyOut3, e=dummyOut4, f=dummyOut5, g=dummyOut6, h=dummyOut7, sel=address[0..2], out=out);
+    //s = "abcdefgh"
+    //", ".join((f"{c}=dummyOut{i}" for i, c in enumerate(s)))
+}

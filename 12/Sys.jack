@@ -1,0 +1,53 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Sys.jack
+
+/**
+ * A library that supports various program execution services.
+ */
+class Sys {
+
+    static int delay_factor;
+
+    /** Performs all the initializations required by the OS. */
+    function void init() {
+        let delay_factor = 80;  // best value I could find on my laptop!
+        do Memory.init();  // need to be initialized first bc Math uses an Array powers_of_two in our implementation!
+        do Math.init();
+        do Screen.init();
+        do Output.init();
+        do Keyboard.init();
+        do Main.main();
+        do Sys.halt();
+        return;
+    }
+
+    /** Halts the program execution. */
+    function void halt() {
+        while (true) {}
+        return;
+    }
+
+    /** Waits approximately duration milliseconds and returns.  */
+    function void wait(int duration) {
+        var int index;
+        var int sub_index;
+        let index = 0;
+        let sub_index = 0;
+        while (index < duration) {  // NOTE: due to integer overflow, we cannot multiply duration with delay_factor for many (reasonable) values of delay_factor
+            while (sub_index < delay_factor) {let sub_index = sub_index + 1;}
+            let index = index + 1;
+            let sub_index = 0;
+        }
+        return;
+    }
+
+    /** Displays the given error code in the form "ERR<errorCode>",
+     *  and halts the program's execution. */
+    function void error(int errorCode) {
+        do Output.printString("ERR");
+        do Output.printInt(errorCode);
+        return;
+    }
+}

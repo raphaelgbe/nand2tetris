@@ -1,0 +1,10 @@
+..\..\tools\JackCompiler.bat MathTest
+..\..\tools\JackCompiler.bat MemoryTest
+..\..\tools\JackCompiler.bat ArrayTest
+..\..\tools\JackCompiler.bat KeyboardTest
+..\..\tools\JackCompiler.bat OutputTest
+..\..\tools\JackCompiler.bat ScreenTest
+..\..\tools\JackCompiler.bat StringTest
+..\..\tools\JackCompiler.bat SysTest
+
+..\..\tools\JackCompiler.bat Pong

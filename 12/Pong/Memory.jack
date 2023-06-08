@@ -1,0 +1,93 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+
+    static Array ram;
+    static Array heap;
+    static int free_list;
+    static int top_n_fits;
+    static int last_address_of_free_list;
+
+    /** Initializes the class. */
+    function void init() {
+        let ram = 0;
+        let heap = 2048;
+        let free_list = 2048;
+        let top_n_fits = 3; // top_n_fits = 1 is first_fit, top_n_fits = size_of_ram (/ 3 actually bc of overhead) is best_fit
+        let last_address_of_free_list = 2048;
+        let heap[0] = 0; // next in linked-list of free segments
+        let heap[1] = 14333; // length of segment (initially as big as possible) ; note that this is 14335 instead of 14333 in Coursera video, but we pick the latter here to account for the overhead from the start
+        return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+        var int content;
+        let content = ram[address];
+        return content;
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. */
+    function int alloc(int size) {
+        var int current_address;
+        var int current_size;
+        var int best_candidate;
+        var int best_candidate_size;
+        var bool no_candidate_found_yet;
+        var int num_fits;
+        var int out_address;
+        let current_address = free_list;
+        let num_fits = 0;
+        let no_candidate_found_yet = true;
+        // first let's find the best candidate among the first top_n_fits:
+        while ((num_fits < top_n_fits) & (~(current_address = 0))) {
+            let current_size = Memory.peek(current_address + 1);
+            if (current_size > (size + 1)) { // i.e. >= (size + 2)
+                if (no_candidate_found_yet) {
+                    let no_candidate_found_yet = false;
+                    let best_candidate = current_address;
+                    let best_candidate_size = current_size;
+                } else {
+                    if (best_candidate_size > current_size) {
+                        let best_candidate = current_address;
+                        let best_candidate_size = current_size;
+                    }
+                }
+                let num_fits = num_fits + 1;
+            }
+            let current_address = Memory.peek(current_address);
+        }
+        // best_candidate is found, now we just need to update the free list & return the address of the block allocated to the object:
+        let out_address = best_candidate + best_candidate_size - size; // + 2 - 2 cancelling one another
+        do Memory.poke(out_address, 0);
+        do Memory.poke(out_address + 1, size);
+        do Memory.poke(best_candidate + 1, best_candidate_size - (size + 2));
+        return (out_address + 2);
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) {
+        var int address_of_deallocated_object;
+        let address_of_deallocated_object = (o - 2);
+        do Memory.poke(last_address_of_free_list, address_of_deallocated_object);
+        do Memory.poke(address_of_deallocated_object, 0);
+        let last_address_of_free_list = address_of_deallocated_object;
+        return;
+    }    
+}

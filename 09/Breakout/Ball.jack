@@ -1,0 +1,96 @@
+/*
+NOTE: coordinates are like so:
+  0 .--> x <= 511
+    |
+    v
+    y <= 255
+*/
+
+class Ball {
+    field int unit_size;
+    field int x;
+    field int y;
+
+    constructor Ball new(int game_unit_size) {
+        let unit_size = game_unit_size;
+        let x = game_unit_size;
+        let y = 0;
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + unit_size, y + unit_size);
+        return;
+    }
+
+    method int getX() {
+        return x;
+    }
+
+    method int getY() {
+        return y;
+    }
+
+    method void moveUpLeft() {
+        if ((~(x = 0))&(~(y = 0))) {
+            do Screen.setColor(false);
+            do Screen.drawLine(x, y + unit_size, x + unit_size, y + unit_size);  // erase line on bottom
+            do Screen.drawLine(x + unit_size, y, x + unit_size, y + unit_size);  // erase line on the right
+            do Screen.setColor(true);
+            do Screen.drawLine(x - 1, y - 1, x + unit_size - 1, y - 1);  // draw line on top, with -1 shift on x-axis because diagonal move
+            do Screen.drawLine(x - 1, y - 1, x - 1, y + unit_size - 1);  // draw line on left, with -1 shift on y-axis because diagonal move
+            let x = x - 1;
+            let y = y - 1;
+        }
+        return;
+    }
+
+    method void moveUpRight() {
+        if ((~(x + unit_size = 511))&(~(y = 0))) {
+            do Screen.setColor(false);
+            do Screen.drawLine(x, y + unit_size, x + unit_size, y + unit_size);  // erase line on bottom
+            do Screen.drawLine(x, y, x, y + unit_size);  // erase line on the left
+            do Screen.setColor(true);
+            do Screen.drawLine(x + 1, y - 1, x + unit_size + 1, y - 1);  // draw line on top, with -1 shift on x-axis because diagonal move
+            do Screen.drawLine(x + unit_size + 1, y - 1, x + unit_size + 1, y + unit_size - 1);  // draw line on right, with -1 shift on y-axis because diagonal move
+            let x = x + 1;
+            let y = y - 1;
+        }
+        return;
+    }
+
+    method void moveDownLeft() {
+        if ((~(x = 0))&(~(y + unit_size = 255))) {
+            do Screen.setColor(false);
+            do Screen.drawLine(x, y, x + unit_size, y);  // erase line on top
+            do Screen.drawLine(x + unit_size, y, x + unit_size, y + unit_size);  // erase line on the right
+            do Screen.setColor(true);
+            do Screen.drawLine(x - 1, y + unit_size + 1, x + unit_size - 1, y + unit_size + 1);  // draw line on bottom, with -1 shift on x-axis because diagonal move
+            do Screen.drawLine(x - 1, y + 1, x - 1, y + unit_size + 1);  // draw line on left, with +1 shift on y-axis because diagonal move
+            let x = x - 1;
+            let y = y + 1;
+        }
+        return;
+    }
+
+    method void moveDownRight() {
+        if ((~(x + unit_size = 511))&(~(y + unit_size = 255))) {
+            do Screen.setColor(false);
+            do Screen.drawLine(x, y, x + unit_size, y);  // erase line on top
+            do Screen.drawLine(x, y, x, y + unit_size);  // erase line on the left
+            do Screen.setColor(true);
+            do Screen.drawLine(x + 1, y + unit_size + 1, x + unit_size + 1, y + unit_size + 1);  // draw line on bottom, with +1 shift on x-axis because diagonal move
+            do Screen.drawLine(x + unit_size + 1, y + 1, x + unit_size + 1, y + unit_size + 1);  // draw line on right, with +1 shift on y-axis because diagonal move
+            let x = x + 1;
+            let y = y + 1;
+        }
+        return;
+    }
+}

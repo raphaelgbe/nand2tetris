@@ -1,0 +1,36 @@
+TOKENS:
+python jack_analyzer.py --input Square --generate-tokens-file yes
+python jack_analyzer.py --input ExpressionLessSquare --generate-tokens-file yes
+python jack_analyzer.py --input ArrayTest --generate-tokens-file yes
+
+in tools/
+TextComparer.bat ..\projects\10\Square\SquareGameT.xml ..\projects\10\Square\SquareGameT_test.xml
+TextComparer.bat ..\projects\10\Square\SquareT.xml ..\projects\10\Square\SquareT_test.xml
+TextComparer.bat ..\projects\10\Square\MainT.xml ..\projects\10\Square\MainT_test.xml
+
+
+TextComparer.bat ..\projects\10\ExpressionLessSquare\SquareGameT.xml ..\projects\10\ExpressionLessSquare\SquareGameT_test.xml
+TextComparer.bat ..\projects\10\ExpressionLessSquare\SquareT.xml ..\projects\10\ExpressionLessSquare\SquareT_test.xml
+TextComparer.bat ..\projects\10\ExpressionLessSquare\MainT.xml ..\projects\10\ExpressionLessSquare\MainT_test.xml
+
+
+TextComparer.bat ..\projects\10\ArrayTest\MainT.xml ..\projects\10\ArrayTest\MainT_test.xml
+
+
+END-TO-END
+python jack_analyzer.py --input Square
+python jack_analyzer.py --input ExpressionLessSquare
+python jack_analyzer.py --input ArrayTest
+
+in tools/
+TextComparer.bat ..\projects\10\Square\SquareGame.xml ..\projects\10\Square\SquareGame_test.xml
+TextComparer.bat ..\projects\10\Square\Square.xml ..\projects\10\Square\Square_test.xml
+TextComparer.bat ..\projects\10\Square\Main.xml ..\projects\10\Square\Main_test.xml
+
+
+TextComparer.bat ..\projects\10\ExpressionLessSquare\SquareGame.xml ..\projects\10\ExpressionLessSquare\SquareGame_test.xml
+TextComparer.bat ..\projects\10\ExpressionLessSquare\Square.xml ..\projects\10\ExpressionLessSquare\Square_test.xml
+TextComparer.bat ..\projects\10\ExpressionLessSquare\Main.xml ..\projects\10\ExpressionLessSquare\Main_test.xml
+
+
+TextComparer.bat ..\projects\10\ArrayTest\Main.xml ..\projects\10\ArrayTest\Main_test.xml

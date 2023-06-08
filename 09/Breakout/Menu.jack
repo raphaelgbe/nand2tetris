@@ -1,0 +1,37 @@
+class Menu {
+    field int num_levels;
+
+    constructor Menu new(int num_levels) {
+        let num_levels = num_levels;
+        return this;
+    }
+
+    method void run() {
+        var String hello;
+        var BreakoutGame game;
+        let hello = "Welcome to this Jack-implemented Breakout game! Press any key to play";
+        do Output.moveCursor(10, 0);
+        do Output.printString(hello);
+        do wait_for_user_input();
+        do hello.dispose();
+        let game = BreakoutGame.new(4, 0, 255, 22, 63, 380, 0);
+        do game.launch();
+        do game.dispose();
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;        
+    }
+
+    method void wait_for_user_input() {
+        var char key;
+        let key = 0;
+        while (key = 0) {
+            let key = Keyboard.keyPressed();
+        }
+        do Screen.clearScreen();
+        return;
+    }
+}

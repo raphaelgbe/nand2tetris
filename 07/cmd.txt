@@ -1,0 +1,6 @@
+
+python vm_translator.py --input MemoryAccess\
+
+
+python vm_translator.py --input StackArithmetic\
+

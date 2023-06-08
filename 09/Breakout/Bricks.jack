@@ -1,0 +1,38 @@
+class Bricks {
+    field int unit_size;
+    field int num_bricks_x;
+    field int num_bricks_y;
+    field int offset_x;
+    field int offset_y;
+
+    constructor Bricks new(int game_unit_size, int game_num_bricks_x, int game_num_bricks_y, int game_offset_x, int game_offset_y) {
+        let unit_size = game_unit_size;
+        let num_bricks_x = game_num_bricks_x;
+        let num_bricks_y = game_num_bricks_y;
+        let offset_x = game_offset_x;
+        let offset_y = game_offset_y;
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(offset_x, offset_y, offset_x + (num_bricks_x * unit_size) - 1, offset_y + (num_bricks_y * unit_size) - 1);
+        return;
+    }
+
+    method void eraseBrick(int coll_x, int coll_y) {
+        var int id_brick_x;
+        var int id_brick_y;
+        let id_brick_x = (coll_x - offset_x) / unit_size;
+        let id_brick_y = (coll_y - offset_y) / unit_size;
+        do Screen.setColor(false);
+        do Screen.drawRectangle(offset_x + (unit_size * id_brick_x), offset_y + (unit_size * id_brick_y),  offset_x + (unit_size * (id_brick_x + 1)) - 1, offset_y + (unit_size * (id_brick_y + 1)) - 1);
+        return;
+    }
+}

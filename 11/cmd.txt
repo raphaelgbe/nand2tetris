@@ -1,0 +1,13 @@
+END-TO-END
+python jack_analyzer.py --input Average
+python jack_analyzer.py --input ComplexArrays
+python jack_analyzer.py --input ConvertToBin
+python jack_analyzer.py --input Pong
+python jack_analyzer.py --input Seven
+python jack_analyzer.py --input Square
+
+
+COMPARE:
+fc Square\Square.vm ..\09\Square\Square.vm
+
+

@@ -1,0 +1,14 @@
+/** Entrypoint for Breakout clone in Jack */
+// NOTE: very basic collision system, which poses the risk of creating infinite loop...
+// BUT!! GOOD NEWS!! IT ACTUALLY FINISHES!! I could check it by letting it run with pad size = 255 & speed = 0 (i.e. no need to move pas + max speed)
+// Note that just waiting for it to finish was painful, so playing at regular speed with a normal pad makes it inhuman to finish (but it's still possible in practice :) )
+
+class Main {
+    function void main() {
+        var Menu menu;
+        let menu = Menu.new(0);
+        do menu.run();
+        do menu.dispose();
+        return;
+    }
+}

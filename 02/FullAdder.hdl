@@ -1,0 +1,27 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/02/FullAdder.hdl
+
+/**
+ * Computes the sum of three bits.
+ */
+
+CHIP FullAdder {
+    IN a, b, c;  // 1-bit inputs
+    OUT sum,     // Right bit of a + b + c
+        carry;   // Left bit of a + b + c
+
+    PARTS:
+    // Put you code here:
+    //My version (which works):
+    //HalfAdder(a=a, b=b, sum=tempsum, carry=tempcarry);
+    //Or(a=tempsum, b=tempcarry, out=bitValue);
+    //DMux(in=bitValue, sel=tempcarry, a=lsb,b=msb);
+    //HalfAdder(a=lsb, b=c, sum=sum, carry=partialCarry);
+    //HalfAdder(a=msb, b=partialCarry, sum=carry, carry=throwawayCarry);
+    //An actual quick working implementation:
+    HalfAdder(a=a, b=b, sum=b0, carry=c1);
+    HalfAdder(a=b0, b=c, sum=sum, carry=c2);
+    Or(a=c1, b=c2, out=carry);
+}

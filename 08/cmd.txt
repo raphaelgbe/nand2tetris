@@ -1,0 +1,23 @@
+
+python vm_translator.py --input FunctionCalls\
+
+python vm_translator.py --input FunctionCalls\SimpleFunction\SimpleFunction.vm
+
+python vm_translator.py --input FunctionCalls\FibonacciElement\
+
+python vm_translator.py --input FunctionCalls\NestedCall\
+
+python vm_translator.py --input FunctionCalls\StaticsTest\
+
+
+
+
+
+
+python vm_translator.py --input ProgramFlow\
+
+python vm_translator.py --input ProgramFlow\BasicLoop\BasicLoop.vm
+
+python vm_translator.py --input ProgramFlow\FibonacciSeries\FibonacciSeries.vm
+
+
